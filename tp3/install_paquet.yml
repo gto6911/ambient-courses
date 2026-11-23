@@ -1,0 +1,40 @@
+---
+- name: Installation et configuration paquet
+  hosts: all
+
+  tasks:
+    - name: Mettre à jour la liste des paquets
+      ansible.builtin.apt:
+        update_cache: yes
+
+    - name: Installer les paquets apache2 et mysql-server
+      ansible.builtin.apt:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - apache2
+        - mysql-server
+      when: "inventory_hostname in groups['apache']"
+
+    - name: Installer les paquets git, nginx et cosway
+      ansible.builtin.apt:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - git
+        - nginx
+        - cowsay
+      when: "inventory_hostname in groups['master']"
+
+    - name: Installer le paquet ufw sur Ubuntu
+      ansible.builtin.apt:
+        name: "ufw"
+        state: present
+      when: "ansible_facts['distribution'] == 'Ubuntu'"
+
+    - name: Récupérer la liste des paquets installés
+      ansible.builtin.package_facts:
+        manager: auto
+
+
+
