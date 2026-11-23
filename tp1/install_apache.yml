@@ -1,0 +1,28 @@
+---
+# Playbook pour configurer un serveur web
+- name: Installation et configuration apache2
+  hosts: apache
+
+  vars:
+    package_name: "apache2"
+
+  tasks:
+    - name: Mettre à jour la liste des paquets
+      ansible.builtin.apt:
+        update_cache: yes
+
+    - name: Installer le paquet apache2
+      ansible.builtin.apt:
+        name: "{{ package_name }}"
+        state: present
+
+    - name: Démarrer et activer le service
+      ansible.builtin.service:
+        name: "{{ package_name }}"
+        state: started
+        enabled: yes
+
+    - name: Contrôler que le service est démarré
+      ansible.builtin.systemd_service:
+        state: started
+        name: "{{ package_name }}"
