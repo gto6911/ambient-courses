@@ -16,6 +16,15 @@
         - mysql-server
       when: "inventory_hostname in groups['apache']"
 
+ #   - name: Désinstaller le paquets apache2
+ #     ansible.builtin.apt:
+ #       name: "apache2"
+ #       state: absent
+ #     loop:
+ #       - apache2
+ #     when: "inventory_hostname in groups['master']"
+
+
     - name: Installer les paquets git, nginx et cosway
       ansible.builtin.apt:
         name: "{{ item }}"
@@ -36,5 +45,19 @@
       ansible.builtin.package_facts:
         manager: auto
 
+    - name: Modifier fichier html uniquement si apache2 ou nginx installé
+      ansible.builtin.copy:
+        content: "<h1>Bonjour depuis Ansible {{ inventory_hostname }}</h1>"
+        dest: "/var/www/html/index.html"
+      when: "'apache2' in ansible_facts.packages or 'nginx' in ansible_facts.packages"
 
+    - name: Démarrer et activer le service web
+      ansible.builtin.service:
+        name: "{{ item }}"
+        state: started
+        enabled: yes
+      loop:
+        - apache2
+        - nginx
+      when: "item in ansible_facts.packages"
 
