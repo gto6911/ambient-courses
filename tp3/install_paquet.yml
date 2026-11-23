@@ -61,3 +61,15 @@
         - nginx
       when: "item in ansible_facts.packages"
 
+    - name: Récupérer le jour et calculer la parité
+      set_fact:
+        est_pair: "{{ (ansible_facts['date_time']['day'] | int % 2) == 0 }}"
+
+    - name: Récupérer l'heure et savoir si on est avant 12h"
+      set_fact:
+        est_avant_midi: "{{ (ansible_facts['date_time']['hour'] | int) < 12  }}"
+
+    - name: Copier le fichier template dans /etc/jour
+      ansible.builtin.template:
+        src: template/day.j2
+        dest: /etc/jour
