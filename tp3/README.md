@@ -24,6 +24,7 @@ Etape 3: Créer un playbook qui installe les logiciels suivants sur la machine 1
 - cowsay
 - 
 Etape 4: Le playbook doit installer uniquement sur les machines ubuntu le paquet ufw
+
 Etape 5: Le playbook doit modifi er le fi chier html servi par apache2 ou nginx uniquement si apache2 ou nginx est déjà installé pour affi cher “Bonjour depuis Ansible sur machine 1 ou 2 ou 3” et démarrer le service apache2 ou nginx
 Etape 6: Dans /etc/jour: - Si on est un jour pair et qu’il est plus de 12h00, inscrire “pair et plus tard que midi” - Si on est un jour pair et qu’il est moins de 12h00, inscrire “pair et avant midi”
 - Si on est un jour impair et qu’il est plus de 12h00, inscrire “impair et plus tard que midi” - Si on est un jour impair et qu’il est moins de 12h00, inscrire “impair et avant midi”
