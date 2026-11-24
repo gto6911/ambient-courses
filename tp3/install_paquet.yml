@@ -5,7 +5,7 @@
   tasks:
     - name: Mettre à jour la liste des paquets
       ansible.builtin.apt:
-        update_cache: yes
+        update_cache: true
 
     - name: Installer les paquets apache2 et mysql-server
       ansible.builtin.apt:
@@ -23,7 +23,6 @@
  #     loop:
  #       - apache2
  #     when: "inventory_hostname in groups['master']"
-
 
     - name: Installer les paquets git, nginx et cosway
       ansible.builtin.apt:
@@ -49,27 +48,29 @@
       ansible.builtin.copy:
         content: "<h1>Bonjour depuis Ansible {{ inventory_hostname }}</h1>"
         dest: "/var/www/html/index.html"
+        mode: "0644"
       when: "'apache2' in ansible_facts.packages or 'nginx' in ansible_facts.packages"
 
     - name: Démarrer et activer le service web
       ansible.builtin.service:
         name: "{{ item }}"
         state: started
-        enabled: yes
+        enabled: true
       loop:
         - apache2
         - nginx
       when: "item in ansible_facts.packages"
 
     - name: Récupérer le jour et calculer la parité
-      set_fact:
+      ansible.builtin.set_fact:
         est_pair: "{{ (ansible_facts['date_time']['day'] | int % 2) == 0 }}"
 
     - name: Récupérer l'heure et savoir si on est avant 12h"
-      set_fact:
-        est_avant_midi: "{{ (ansible_facts['date_time']['hour'] | int) < 12  }}"
+      ansible.builtin.set_fact:
+        est_avant_midi: "{{ (ansible_facts['date_time']['hour'] | int) < 12 }}"
 
     - name: Copier le fichier template dans /etc/jour
       ansible.builtin.template:
         src: template/day.j2
         dest: /etc/jour
+        mode: "0644"

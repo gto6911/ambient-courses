@@ -11,6 +11,6 @@
     - geerlingguy.docker
 
   tasks:
-    - name : Vérifier que le user {{ user_ambient }} a la permission de faire du docker
+    - name: Vérifier la permission docker pour l'utilisateur {{ user_ambient }}
       ansible.builtin.command: docker ps
-      become_user: "{{ user_ambient }}"
+      changed_when: false

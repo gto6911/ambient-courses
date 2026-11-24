@@ -16,4 +16,5 @@
       ansible.builtin.lineinfile:
         path: "{{ _path_date_time }}"
         line: "Jour : {{ ansible_facts['date_time']['day'] }}, heure : {{ ansible_facts['date_time']['time'] }}"
-        create: yes
+        create: true
+        mode: "0644"
