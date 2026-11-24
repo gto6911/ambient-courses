@@ -2,5 +2,15 @@
 - name: Installation docker
   hosts: all
 
+  vars:
+    user_ambient: ambient_user
+    docker_users:
+      - "{{ user_ambient }}"
+
   roles:
     - geerlingguy.docker
+
+  tasks:
+    - name : Vérifier que le user {{ user_ambient }} a la permission de faire du docker
+      ansible.builtin.command: docker ps
+      become_user: "{{ user_ambient }}"

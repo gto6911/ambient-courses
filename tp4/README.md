@@ -18,3 +18,7 @@ Livrables attendus
  Un projet Git avec :
 - le playbook, l’inventaire et le fi chier requirements
 - les serveurs contiennent une installation de docker
+
+Bonus :
+ - Ajouter l'utilisateur ambient_user sur l'utilisation docker
+ - Ajouter un contrôle que cet utilisateur peut faire des commandes docker
