@@ -1,0 +1,41 @@
+---
+- name: Installation wordpress (apache+wordpress)
+  hosts: web
+
+  vars_files:
+    - vars/default.yml
+
+  tasks:
+    - name: Installation apache2 et des modules
+      ansible.builtin.include_role:
+        name : geerlingguy.apache
+
+    - name: Installation de PHP et PHP-FPM
+      ansible.builtin.include_role:
+        name: geerlingguy.php
+
+    - name: Installation de PHP et PHP-FPM
+      ansible.builtin.include_role:
+        name: geerlingguy.apache-php-fpm
+
+    - name: Create wordpress directory
+      ansible.builtin.file:
+        path: "{{ wp_install_dir }}"
+        state: directory
+        recurse: true
+        mode: "0755"
+
+    - name: Download and unarchive wordpress
+      ansible.builtin.unarchive:
+        src: "{{ wp_archive_url }}"
+        dest: /var/www/
+        remote_src: true
+        creates: "{{ wp_install_dir }}/wp-settings.php"
+
+    - name: Génération de wp-config.php depuis le template Jinja
+      ansible.builtin.template:
+        src: config_wp/config.php.j2
+        dest: "{{ wp_install_dir }}/wp-config.php"
+        owner: www-data
+        group: www-data
+        mode: "0640"

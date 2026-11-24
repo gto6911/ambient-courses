@@ -1,0 +1,11 @@
+---
+- name: Installation wordpress (partie db)
+  hosts: db
+
+  vars_files:
+    - vars/default.yml
+
+  tasks:
+    - name: Installation mySQL
+      ansible.builtin.include_role:
+        name: geerlingguy.mysql
