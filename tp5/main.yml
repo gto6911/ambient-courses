@@ -1,0 +1,19 @@
+---
+- name: "TP3"
+  ansible.builtin.import_playbook: ../tp3/install_paquet.yml
+
+- name: "TP4"
+  ansible.builtin.import_playbook: ../tp4/install_docker.yml
+
+- name: "TP5"
+  hosts: all
+
+  vars:
+    _path_date_time: "/etc/last_changed"
+
+  tasks:
+    - name: Créer le fichier {{ _path_date_time }}
+      ansible.builtin.lineinfile:
+        path: "{{ _path_date_time }}"
+        line: "Jour : {{ ansible_facts['date_time']['day'] }}, heure : {{ ansible_facts['date_time']['time'] }}"
+        create: yes
