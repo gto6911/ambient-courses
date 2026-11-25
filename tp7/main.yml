@@ -1,9 +1,13 @@
 ---
 - name: Faire le café
   hosts: localhost
+  gather_facts: false
 
   vars:
     temparature_csv: "input/temperature.csv"
+    sanry_latitude: 49.0533
+    sanry_longitude: 6.3447
+    meteo_url: "https://api.open-meteo.com/v1/forecast?latitude={{ sanry_latitude }}&longitude={{ sanry_longitude }}&hourly=temperature_2m"
 
   tasks:
     - name: Read lines from CSV file and return a list
@@ -18,6 +22,41 @@
         msg: 'Day {{ item.time }}, temperature {{ item.temperature }}'
       loop: "{{ lines.list | unique | sort(attribute='time') }}"
 
-      
+    - name: Récupérer l'heure courante"
+      ansible.builtin.set_fact:
+        heure_courante: "{{ now().strftime('%H:00') }}"
+        date_heure_courante: "{{ now().strftime('%Y-%m-%dT%H:00') }}"
+
+    - name: Afficher l'heure courante
+      ansible.builtin.debug:
+        msg: 'Heure courante : {{ heure_courante }}'
+
+
+    - name: Récupérer la météo de sanry
+      ansible.builtin.uri:
+        url: "{{ meteo_url }}"
+        return_content: true
+      register: meteo_sanry
+
+    - name: Extraire les deux températures à comparer
+      ansible.builtin.set_fact:
+        temp_csv: "{{ (lines.list | unique | selectattr('time', 'search', 'T' ~ heure_courante) | first).temperature }}"
+        temp_ville: "{{ meteo_sanry.json.hourly.temperature_2m[meteo_sanry.json.hourly.time.index(date_heure_courante)] }}"
+
+    - name: Afficher les températures
+      ansible.builtin.debug:
+        msg:
+          - "Température actuelle sanry : {{ temp_ville }} °C"
+          - "Température du CSV à {{ heure_courante }} : {{ temp_csv }} °C"
+          - >-
+            {% if temp_ville | float > temp_csv | float %}Il fait plus chaud à sanry
+            {%- elif temp_ville | float < temp_csv | float %}Il fait plus froid à sanry, SUPRISSEEE !
+            {%- else %}Même température à sanry que dans le CSV{% endif %}
+
+
+
+
+
+
 
 
