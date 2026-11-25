@@ -33,6 +33,19 @@
         remote_src: true
         creates: "{{ wp_install_dir }}/wp-settings.php"
 
+    - name: Récupération d'un salt unique via uri wordpress
+      ansible.builtin.uri:
+        url: "{{ wp_salt_url }}"
+        return_content: true
+      register: salt_generate
+      no_log: true
+      tags: debug-salt
+
+    - name: Afficher les salt récupérés
+      ansible.builtin.debug:
+        var: salt_generate.content.splitlines()
+      tags: [never,debug-salt]
+
     - name: Génération de wp-config.php depuis le template Jinja
       ansible.builtin.template:
         src: config_wp/config.php.j2
