@@ -4,6 +4,7 @@
 
   vars_files:
     - vars/default.yml
+    - vault.yml
 
   tasks:
     - name: Installation apache2 et des modules

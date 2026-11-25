@@ -1,7 +1,7 @@
 # ---------- WordPress / connexion BDD ----------
 wp_db_name: wordpress
 wp_db_user: wordpress
-wp_db_password: "wordpress"
+wp_db_password: "{{ vault_wp_db_password }}"
 wp_db_host: "{{ hostvars[groups['db'][0]]['ansible_host'] }}"
 wp_web_host: "{{ hostvars[groups['web'][0]]['ansible_host'] }}"
 
@@ -9,10 +9,10 @@ wp_install_dir: /var/www/wordpress
 wp_archive_url: https://fr.wordpress.org/latest-fr_FR.tar.gz
 
 # ---------- MySQL (geerlingguy.mysql) ----------
-mysql_root_password: root
+mysql_root_password:  "{{ vault_mysql_root_password }}"
 mysql_user_home: /root
 mysql_user_name: root
-mysql_user_password: root
+mysql_user_password: "{{ vault_mysql_user_password }}"
 mysql_bind_address: "0.0.0.0"
 
 mysql_databases:
@@ -23,7 +23,7 @@ mysql_databases:
 mysql_users:
   - name: "{{ wp_db_user }}"
     host: "{{ wp_web_host }}"
-    password: "{{ wp_db_password }}"
+    password: "{{ vault_wp_db_password }}"
     priv: "{{ wp_db_name }}.*:ALL"
 
 # ---------- PHP (geerlingguy.php) ----------
